@@ -8,6 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class AppConfig {
     @Bean
     public WebClient localApiClient() {
-        return WebClient.create("http://api.nbp.pl/api/exchangerates/");
+        return WebClient.create("http://api.nbp.pl/api/exchangerates/rates/");
     }
 }

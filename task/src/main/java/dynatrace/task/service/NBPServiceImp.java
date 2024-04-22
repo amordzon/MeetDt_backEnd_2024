@@ -21,7 +21,7 @@ public class NBPServiceImp implements NBPService{
     public AverageRate getAverageExchangeRate(String code, LocalDate date) {
         TableA tableResponse = localApiClient
                 .get()
-                .uri("rates/a/"+code+"/"+date+"?format=json")
+                .uri("a/"+code+"/"+date+"?format=json")
                 .retrieve()
                 .bodyToMono(TableA.class)
                 .block(REQUEST_TIMEOUT);
@@ -30,9 +30,12 @@ public class NBPServiceImp implements NBPService{
 
     @Override
     public MinMaxRate getMinMaxExchangeRate(String code, int n) {
+        if (n > 255) {
+            throw new IllegalArgumentException("Value of n must be less than or equal to 255.");
+        }
         TableA tableResponse = localApiClient
                 .get()
-                .uri("rates/a/"+code+"/last/"+n+"?format=json")
+                .uri("a/"+code+"/last/"+n+"?format=json")
                 .retrieve()
                 .bodyToMono(TableA.class)
                 .block(REQUEST_TIMEOUT);
@@ -55,9 +58,12 @@ public class NBPServiceImp implements NBPService{
 
     @Override
     public BidAskRateResponse getBiggestDifferenceRate(String code, int n) {
+        if (n > 255) {
+            throw new IllegalArgumentException("Value of n must be less than or equal to 255.");
+        }
         TableC tableResponse = localApiClient
                 .get()
-                .uri("rates/c/"+code+"/last/"+n+"?format=json")
+                .uri("c/"+code+"/last/"+n+"?format=json")
                 .retrieve()
                 .bodyToMono(TableC.class)
                 .block(REQUEST_TIMEOUT);
