@@ -1,11 +1,14 @@
 package dynatrace.task.service;
 
+import dynatrace.task.dto.MinMaxRate;
+import dynatrace.task.dto.Rates;
 import dynatrace.task.dto.TableA;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class NBPServiceImp implements NBPService{
@@ -18,13 +21,38 @@ public class NBPServiceImp implements NBPService{
     }
 
     @Override
-    public double getAverageExchangeRate(String code, LocalDate date) {
+    public Rates getAverageExchangeRate(String code, LocalDate date) {
         TableA tableResponse = localApiClient
                 .get()
                 .uri("rates/a/"+code+"/"+date+"?format=json")
                 .retrieve()
                 .bodyToMono(TableA.class)
                 .block(REQUEST_TIMEOUT);
-        return tableResponse != null ? tableResponse.getRates().get(0).getMid() : 0.0;
+        return tableResponse.getRates().get(0);
+    }
+
+    @Override
+    public MinMaxRate getMinMaxExchangeRate(String code, int n) {
+        TableA tableResponse = localApiClient
+                .get()
+                .uri("rates/a/"+code+"/last/"+n+"?format=json")
+                .retrieve()
+                .bodyToMono(TableA.class)
+                .block(REQUEST_TIMEOUT);
+        if (tableResponse != null && tableResponse.getRates() != null && !tableResponse.getRates().isEmpty()) {
+            Rates minRate = tableResponse.getRates().get(0);
+            Rates maxRate = tableResponse.getRates().get(0);
+            for (Rates rate : tableResponse.getRates()) {
+                if (rate.getMid() < minRate.getMid()) {
+                    minRate = rate;
+                }
+                if (rate.getMid() > maxRate.getMid()) {
+                    maxRate = rate;
+                }
+            }
+            return new MinMaxRate(minRate, maxRate);
+        } else {
+            return null;
+        }
     }
 }
