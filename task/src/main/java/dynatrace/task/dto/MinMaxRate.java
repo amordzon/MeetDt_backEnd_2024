@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class MinMaxRate {
-    private Rates minRate;
-    private Rates maxRate;
+    private AverageRate minRate;
+    private AverageRate maxRate;
 }

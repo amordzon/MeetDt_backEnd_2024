@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class Rates {
-    private String no;
-    private LocalDate effectiveDate;
+public class AverageRate extends Rates{
+    private double mid;
 }

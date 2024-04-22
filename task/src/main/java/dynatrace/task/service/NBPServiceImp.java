@@ -1,14 +1,11 @@
 package dynatrace.task.service;
 
-import dynatrace.task.dto.MinMaxRate;
-import dynatrace.task.dto.Rates;
-import dynatrace.task.dto.TableA;
+import dynatrace.task.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class NBPServiceImp implements NBPService{
@@ -21,7 +18,7 @@ public class NBPServiceImp implements NBPService{
     }
 
     @Override
-    public Rates getAverageExchangeRate(String code, LocalDate date) {
+    public AverageRate getAverageExchangeRate(String code, LocalDate date) {
         TableA tableResponse = localApiClient
                 .get()
                 .uri("rates/a/"+code+"/"+date+"?format=json")
@@ -40,9 +37,9 @@ public class NBPServiceImp implements NBPService{
                 .bodyToMono(TableA.class)
                 .block(REQUEST_TIMEOUT);
         if (tableResponse != null && tableResponse.getRates() != null && !tableResponse.getRates().isEmpty()) {
-            Rates minRate = tableResponse.getRates().get(0);
-            Rates maxRate = tableResponse.getRates().get(0);
-            for (Rates rate : tableResponse.getRates()) {
+            AverageRate minRate = tableResponse.getRates().get(0);
+            AverageRate maxRate = tableResponse.getRates().get(0);
+            for (AverageRate rate : tableResponse.getRates()) {
                 if (rate.getMid() < minRate.getMid()) {
                     minRate = rate;
                 }
@@ -54,5 +51,10 @@ public class NBPServiceImp implements NBPService{
         } else {
             return null;
         }
+    }
+
+    @Override
+    public AverageRate getBiggestDifferenceRate(String code, int n) {
+        return null;
     }
 }

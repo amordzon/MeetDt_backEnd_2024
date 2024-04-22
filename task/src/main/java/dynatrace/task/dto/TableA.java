@@ -7,9 +7,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class TableA {
-    private String table;
-    private String currenncy;
-    private String code;
-    private List<Rates> rates;
+public class TableA extends Table{
+    private List<AverageRate> rates;
 }
