@@ -1,6 +1,8 @@
 package dynatrace.task.controller;
 
 
+import dynatrace.task.dto.BidAskRate;
+import dynatrace.task.dto.BidAskRateResponse;
 import dynatrace.task.dto.MinMaxRate;
 import dynatrace.task.dto.AverageRate;
 import dynatrace.task.service.NBPService;
@@ -31,7 +33,7 @@ public class NBPController {
     }
 
     @GetMapping("/biggest-difference")
-    public AverageRate getBiggestDifferenceRate(@RequestParam String code, @RequestParam int N) {
+    public BidAskRateResponse getBiggestDifferenceRate(@RequestParam String code, @RequestParam int N) {
         return nbpService.getBiggestDifferenceRate(code, N);
     }
 }

@@ -1,5 +1,7 @@
 package dynatrace.task.service;
 
+import dynatrace.task.dto.BidAskRate;
+import dynatrace.task.dto.BidAskRateResponse;
 import dynatrace.task.dto.MinMaxRate;
 import dynatrace.task.dto.AverageRate;
 
@@ -10,5 +12,5 @@ public interface NBPService{
 
     MinMaxRate getMinMaxExchangeRate(String code, int n);
 
-    AverageRate getBiggestDifferenceRate(String code, int n);
+    BidAskRateResponse getBiggestDifferenceRate(String code, int n);
 }

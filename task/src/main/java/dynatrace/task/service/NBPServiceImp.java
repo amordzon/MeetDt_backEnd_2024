@@ -48,13 +48,37 @@ public class NBPServiceImp implements NBPService{
                 }
             }
             return new MinMaxRate(minRate, maxRate);
-        } else {
-            return null;
         }
+        return null;
+
     }
 
     @Override
-    public AverageRate getBiggestDifferenceRate(String code, int n) {
+    public BidAskRateResponse getBiggestDifferenceRate(String code, int n) {
+        TableC tableResponse = localApiClient
+                .get()
+                .uri("rates/c/"+code+"/last/"+n+"?format=json")
+                .retrieve()
+                .bodyToMono(TableC.class)
+                .block(REQUEST_TIMEOUT);
+        if (tableResponse != null && tableResponse.getRates() != null && !tableResponse.getRates().isEmpty()) {
+            BidAskRateResponse biggestDiffRates = new BidAskRateResponse();
+            biggestDiffRates.setDifference(Double.NEGATIVE_INFINITY);
+
+            for (BidAskRate rate : tableResponse.getRates()) {
+                double difference = rate.getAsk() - rate.getBid();
+                if (difference >= biggestDiffRates.getDifference()) {
+                    biggestDiffRates = new BidAskRateResponse();
+                    biggestDiffRates.setNo(rate.getNo());
+                    biggestDiffRates.setEffectiveDate(rate.getEffectiveDate());
+                    biggestDiffRates.setBid(rate.getBid());
+                    biggestDiffRates.setAsk(rate.getAsk());
+                    biggestDiffRates.setDifference(difference);
+                }
+            }
+            return biggestDiffRates;
+        }
+
         return null;
     }
 }
